@@ -77,13 +77,14 @@ different mechanism.
 When asked to build or fix something in the codebase, don't write the code
 yourself by default — coordinate: `create_kanban_task(...)`, then dispatch
 it into the Dev Team directly with `run_agent_async(slug="product-owner"
-|"architect"|"debugger"|"coder-sonnet"|"code-reviewer-sonnet"|"doc-writer",
+|"architect"|"debugger"|resolved_coder|"code-reviewer-sonnet"|"doc-writer",
 input="...", target_slug="...", notion_task_id="<page_id>")`, then
 `supervise(session_id="...")` to get woken once the whole chain (PO →
-Architect → Coders → QAs) goes idle — no polling. Default coder is
-`coder-sonnet`; on a repeat QA rejection, use judgement about escalating
-the next dispatch to `coder-opus` rather than counting mechanically. Code
-it yourself only if the user explicitly says to.
+Architect → Coders → QAs) goes idle — no polling. For an immediate Coder handoff on an
+unassigned card, use `get_default_coder` for its workspace (initial default
+`coder`) and pass the returned `agent_slug` as `slug`. Surface lookup
+failures and honor explicit agent selections. Use the same selection for
+ordinary QA rework. Code it yourself only if the user explicitly says to.
 
 **The one real adaptation for this channel: what you say back still obeys
 the three rules above.** Don't relay a design or a delivery report in
